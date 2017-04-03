@@ -1,0 +1,94 @@
+buildscript {
+	ext {
+		springBootVersion = '1.5.2.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("se.transmode.gradle:gradle-docker:1.2")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'application'
+apply plugin: 'docker'
+
+jar {
+    baseName = "${archivesBaseName}"
+    version =  "${version}"
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+
+
+dependencies {
+	// Spring AOP
+	compile("org.springframework.boot:spring-boot-starter-aop:${springBootVersion}")
+	// Spring JPA
+	compile("org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}") {exclude group: 'org.apache.tomcat', module: 'tomcat-jdbc'}
+	// Spring Integration
+	compile("org.springframework.boot:spring-boot-starter-integration:${springBootVersion}")
+	// Spring Web
+	compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
+	//swagger-springmvc
+	compile('io.springfox:springfox-swagger2:2.2.2')
+	compile('io.springfox:springfox-swagger-ui:2.2.2')
+	compile('org.webjars:bootstrap:3.3.5')
+	// Apache Ignite
+	compile('org.apache.ignite:ignite-core:1.9.0')
+	compile('org.apache.ignite:ignite-spring:1.9.0')
+	compile('org.apache.ignite:ignite-log4j:1.9.0')
+	compile('org.apache.ignite:ignite-aws:1.9.0')
+	compile('org.apache.ignite:ignite-indexing:1.9.0')
+	// PostgreSQL Driver
+	compile('org.postgresql:postgresql:42.0.0')
+	// Hikari
+	compile('com.zaxxer:HikariCP:2.6.1')
+	// H2
+	runtime('com.h2database:h2:1.4.191')
+	// Test
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+
+eclipse {
+	classpath {
+		containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
+		containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
+	}
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '2.9'
+}
+
+task buildDocker(type: Docker, dependsOn: build) {
+    applicationName = jar.baseName
+    tagVersion = version
+    dockerfile = file('Dockerfile')
+    registry = "registry.gitlab.com/sageburner"
+    doFirst {
+        copy {
+            from jar
+            into stageDir
+        }
+        copy {
+            from 'ignite'
+            into 'build/docker/ignite'
+        }
+    }
+
+    if (publish == "true") {
+        push = true
+    }
+}

@@ -1,0 +1,39 @@
+# ===================================================================
+# SPRING BOOT PROPERTIES
+# ===================================================================
+
+# ----------------------------------------
+# CORE PROPERTIES
+# ----------------------------------------
+
+# LOGGING
+logging:
+    level:
+        org:
+            springframework:
+                web: ERROR
+            hibernate: ERROR
+
+#Spring
+spring:
+    # DATASOURCE (DataSourceAutoConfiguration & DataSourceProperties)
+#    datasource:
+#      poolName: SpringBootHikariCP
+#      type: com.zaxxer.hikari.HikariDataSource
+#      url: jdbc:postgresql://db/ignite
+#      driver-class-name: org.postgresql.Driver
+#      username: ignite
+#      password: ignite
+#      hikari:
+#        minimumIdle: 5
+#        maximumPoolSize: 90
+#        idleTimeout: 30000
+
+#SECURITY
+security:
+    basic:
+        enabled: false
+    user:
+        name: test
+        password: test
+        role: USER

@@ -1,0 +1,30 @@
+# ===================================================================
+# SPRING BOOT PROPERTIES
+# ===================================================================
+
+# ----------------------------------------
+# CORE PROPERTIES
+# ----------------------------------------
+
+#Spring
+spring:
+    # PROFILES
+    profiles:
+        active: ${spring_profiles_active}
+    # IDENTITY (ContextIdApplicationContextInitializer)
+    application:
+        name: api-ignite-creditcard
+    # JPA (JpaBaseConfiguration, HibernateJpaAutoConfiguration)
+    jpa:
+#        database:
+#        show-sql: false
+        hibernate:
+            ddl-auto: update #(validate | update | create | create-drop)
+#        properties:
+#            hibernate:
+#                type: trace
+#                format_sql: true
+    # JACKSON (JacksonProperties)
+    jackson:
+        serialization-inclusion: non_null
+        # FIXME configure jackson PropertyNamingStrategy for incoming requests (different for incoming vs outgoing??) ObjectMapper.writer() vs ObjectMapper.reader()

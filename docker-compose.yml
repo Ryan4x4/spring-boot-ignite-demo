@@ -1,0 +1,18 @@
+version: '2'
+services:
+  postgres:
+    image: postgres:9.6
+    environment:
+      POSTGRES_DB: ignite
+      POSTGRES_USER: ignite
+      POSTGRES_PASSWORD: ignite
+    expose:
+      - 5432
+  api-ignite-creditcard:
+    image: registry.gitlab.com/sageburner/api-ignite-creditcard:0.0.5
+    ports:
+      - "8088:8080"
+    expose:
+      - 8080
+    links:
+      - postgres:db
